@@ -6,15 +6,20 @@ var sentences = paragraph.split(".").filter((sentence) => sentence.trim() != '')
 
 var longestWord = words.reduce((previousLongest, nextWord) => previousLongest.length > nextWord.length ? previousLongest : nextWord);
 
-function getFrequencyHashMap(wordsArray) {
-    return wordsArray.reduce((element, word) => {
+function getFrequencyHashMap(wordsArray, twoWords) {
+    return wordsArray.reduce((element, word, index) => {
+        if(twoWords){
+            element[`${word} ${wordsArray[index +1]}`] = (element[`${word} ${wordsArray[index +1]}`] || 0) + 1;
+        }
+        else{
         element[word] = (element[word] || 0) + 1;
+    }
         return element;
     }, {});
 }
 
-function getFrequentWords(stringArray, amount) {
-    var frequencyHashmap = getFrequencyHashMap(stringArray)
+function getFrequentWords(stringArray, amount, twoWords=false) {
+    var frequencyHashmap = getFrequencyHashMap(stringArray, twoWords)
 
     var mostFrequent = new Set();
 
@@ -31,8 +36,8 @@ function getFrequentWords(stringArray, amount) {
     return [...mostFrequent].slice(-amount)
 };
 
-function getFrequencyPercentage(stringArray, frequency) {
-    var frequencyHashmap = getFrequencyHashMap(stringArray)
+function getFrequencyPercentage(stringArray, frequency, twoWords=false) {
+    var frequencyHashmap = getFrequencyHashMap(stringArray, twoWords)
 
     var wordsOfFrequency = Object.keys(frequencyHashmap).filter((key) => key !== " " && frequencyHashmap[key] === frequency)
 
@@ -47,6 +52,7 @@ var longestWordLength = longestWord.length;
 var sixMostFrequentWords = getFrequentWords(words, 6);
 var uniqueWordsPercentage = getFrequencyPercentage(words, 1);
 var averageWordsPerSentence = (totalWords / totalSentences).toFixed();
+var mostFrequentTwoWordPhrases =  getFrequentWords(words, 3, true);
 
 console.log(`The total number of words are: ${totalWords}`);
 console.log(`The total number of sentences are: ${totalSentences}`);
@@ -54,3 +60,4 @@ console.log(`The longest word has: ${longestWordLength} characters`);
 console.log(`The six most frequent words are: ${sixMostFrequentWords}`);
 console.log(`The percentage of unique words are: ${uniqueWordsPercentage}`);
 console.log(`The average number of words in a sentence is: ${averageWordsPerSentence}`);
+console.log(`The most frequent two word phrases are: ${mostFrequentTwoWordPhrases}`);
