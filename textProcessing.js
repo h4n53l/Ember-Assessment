@@ -6,8 +6,8 @@ var sentences = paragraph.split(".").filter((sentence) => sentence.trim() != '')
 
 var longestWord = words.reduce((previousLongest, nextWord) => previousLongest.length > nextWord.length ? previousLongest : nextWord);
 
-function getFrequencyHashMap(wordsArray, twoWords) {
-    return wordsArray.reduce((element, word, index) => {
+function getfrequencyMap(wordsArray, twoWords) {
+    var frequencyMap = wordsArray.reduce((element, word, index) => {
         if(twoWords){
             element[`${word} ${wordsArray[index +1]}`] = (element[`${word} ${wordsArray[index +1]}`] || 0) + 1;
         }
@@ -16,15 +16,17 @@ function getFrequencyHashMap(wordsArray, twoWords) {
     }
         return element;
     }, {});
+
+    return frequencyMap
 }
 
 function getFrequentWords(stringArray, amount, twoWords=false) {
-    var frequencyHashmap = getFrequencyHashMap(stringArray, twoWords)
+    var frequencyMap = getfrequencyMap(stringArray, twoWords)
 
     var mostFrequent = new Set();
 
-    Object.keys(frequencyHashmap).reduce((previousHighest, nextValue) => {
-        if (frequencyHashmap[previousHighest] > frequencyHashmap[nextValue]) {
+    Object.keys(frequencyMap).reduce((previousHighest, nextValue) => {
+        if (frequencyMap[previousHighest] > frequencyMap[nextValue]) {
             mostFrequent.add(previousHighest);
             return previousHighest;
         }
@@ -37,14 +39,27 @@ function getFrequentWords(stringArray, amount, twoWords=false) {
 };
 
 function getFrequencyPercentage(stringArray, frequency, twoWords=false) {
-    var frequencyHashmap = getFrequencyHashMap(stringArray, twoWords)
+    var frequencyMap = getfrequencyMap(stringArray, twoWords)
 
-    var wordsOfFrequency = Object.keys(frequencyHashmap).filter((key) => key !== " " && frequencyHashmap[key] === frequency)
+    var wordsOfFrequency = Object.keys(frequencyMap).filter((key) => key !== " " && frequencyMap[key] === frequency)
 
     var percentageFrequency = 100*(wordsOfFrequency.length/stringArray.length)
 
     return (percentageFrequency.toFixed(2))
 }
+
+function getProminence(stringArray, word) {
+    var indexSum = stringArray.indexOf(word) == 0 ? 1 : 0;
+    for(let index = 0; index < stringArray.length; index++){
+        if (stringArray[index] === word)
+        indexSum = indexSum + index;
+        }
+
+        var prominence = (stringArray.length - ((indexSum - 1) / (stringArray.indexOf(word) + 1))) * (100 / stringArray.length)
+
+return  prominence
+}
+
 
 var totalWords = words.length;
 var totalSentences = sentences.length;
@@ -61,3 +76,8 @@ console.log(`The six most frequent words are: ${sixMostFrequentWords}`);
 console.log(`The percentage of unique words are: ${uniqueWordsPercentage}`);
 console.log(`The average number of words in a sentence is: ${averageWordsPerSentence}`);
 console.log(`The most frequent two word phrases are: ${mostFrequentTwoWordPhrases}`);
+console.log(`The prominence of ${words[0]} is ${getProminence(words, words[0])}`)
+console.log(`The prominence of ${words[1]} is ${getProminence(words, words[1])}`)
+console.log(`The prominence of ${words[2]} is ${getProminence(words, words[2])}`)
+console.log(`The prominence of ${words[3]} is ${getProminence(words, words[3])}`)
+console.log(`The prominence of ${words[4]} is ${getProminence(words, words[4])}`)
